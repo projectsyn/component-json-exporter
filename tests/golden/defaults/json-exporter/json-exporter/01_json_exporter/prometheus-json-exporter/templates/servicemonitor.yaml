@@ -1,0 +1,39 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  labels:
+    app.kubernetes.io/instance: prometheus-json-exporter
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: prometheus-json-exporter
+    app.kubernetes.io/version: v0.5.0
+    helm.sh/chart: prometheus-json-exporter-0.7.1
+    monitoring.syn.tools/infra: 'true'
+  name: prometheus-json-exporter-example
+spec:
+  endpoints:
+    - interval: 60s
+      metricRelabelings:
+        - replacement: http://example.com/healthz
+          sourceLabels:
+            - instance
+          targetLabel: instance
+        - replacement: example
+          sourceLabels:
+            - target
+          targetLabel: target
+      params:
+        module:
+          - example_module
+        target:
+          - http://example.com/healthz
+      path: /probe
+      port: http
+      scheme: http
+  jobLabel: prometheus-json-exporter
+  namespaceSelector:
+    matchNames:
+      - syn-json-exporter
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: prometheus-json-exporter
+      app.kubernetes.io/name: prometheus-json-exporter

@@ -1,3 +1,55 @@
-# Overwrite parameters here
+---
+applications:
+  - prometheus
 
-# parameters: {...}
+parameters:
+  kapitan:
+    dependencies:
+      - type: https
+        source: https://raw.githubusercontent.com/projectsyn/component-prometheus/master/lib/prometheus.libsonnet
+        output_path: vendor/lib/prometheus.libsonnet
+
+  json_exporter:
+    helm_values:
+      prometheusRule:
+        enabled: true
+      serviceMonitor:
+        enabled: true
+        targets:
+          - name: example
+            url: http://example.com/healthz
+            labels: {}
+            interval: 60s
+            scrapeTimeout: 60s
+            additionalMetricsRelabels: {}
+            module: example_module
+      configuration:
+        config: |
+          ---
+          modules:
+            default:
+              metrics:
+                - name: example_global_value
+                  path: "{ .counter }"
+                  help: Example of a top-level global value scrape in the json
+                  labels:
+                    environment: beta
+                    location: "planet-{.location}"
+
+                - name: example_value
+                  type: object
+                  help: Example of sub-level value scrapes from a json
+                  path: '{.values[?(@.state == "ACTIVE")]}'
+                  labels:
+                    environment: beta
+                    id: '{.id}'
+                  values:
+                    active: 1
+                    count: '{.count}'
+                    boolean: '{.some_boolean}'
+
+              headers:
+                X-Dummy: my-test-header
+
+  prometheus:
+    defaultInstance: infra
