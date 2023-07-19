@@ -1,0 +1,4 @@
+parameters:
+  json_exporter:
+    =_metadata: {}
+    namespace: syn-json-exporter
