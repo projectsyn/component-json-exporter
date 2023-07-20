@@ -1,6 +1,27 @@
+---
 parameters:
   kapitan:
+    dependencies:
+      - type: helm
+        source: ${json_exporter:charts:prometheus_json_exporter:source}
+        chart_name: prometheus-json-exporter
+        version: ${json_exporter:charts:prometheus_json_exporter:version}
+        output_path: ${_base_directory}/helmcharts/json-exporter/${json_exporter:charts:prometheus_json_exporter:version}/
     compile:
+      - input_paths:
+          - ${_base_directory}/component/helm_values.jsonnet
+        input_type: jsonnet
+        output_path: ${_base_directory}/helm_values/
+      - input_paths:
+          - ${_base_directory}/helmcharts/json-exporter/${json_exporter:charts:prometheus_json_exporter:version}
+        input_type: helm
+        output_type: yaml
+        output_path: ${_instance}/01_json_exporter
+        helm_values_files:
+          - ${_base_directory}/helm_values/values.yaml
+        helm_params:
+          name: prometheus-json-exporter
+          namespace: ${json_exporter:namespace}
       - input_paths:
           - ${_base_directory}/component/app.jsonnet
         input_type: jsonnet
@@ -9,3 +30,7 @@ parameters:
           - ${_base_directory}/component/main.jsonnet
         input_type: jsonnet
         output_path: json-exporter/
+      - input_paths:
+          - ${_base_directory}/helm_values
+        input_type: remove
+        output_path: .

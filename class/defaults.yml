@@ -1,4 +1,11 @@
+---
 parameters:
   json_exporter:
     =_metadata: {}
     namespace: syn-json-exporter
+    name: prometheus-json-exporter
+    charts:
+      prometheus_json_exporter:
+        source: https://prometheus-community.github.io/helm-charts
+        version: 0.7.1
+    helm_values: {}

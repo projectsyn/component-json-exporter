@@ -1,0 +1,33 @@
+apiVersion: v1
+data:
+  allow-snippet-annotations: 'false'
+  config.yml: |2
+
+    ---
+    modules:
+      default:
+        metrics:
+          - name: example_global_value
+            path: "{ .counter }"
+            help: Example of a top-level global value scrape in the json
+            labels:
+              environment: beta
+              location: "planet-{.location}"
+
+          - name: example_value
+            type: object
+            help: Example of sub-level value scrapes from a json
+            path: '{.values[?(@.state == "ACTIVE")]}'
+            labels:
+              environment: beta
+              id: '{.id}'
+            values:
+              active: 1
+              count: '{.count}'
+              boolean: '{.some_boolean}'
+
+        headers:
+          X-Dummy: my-test-header
+kind: ConfigMap
+metadata:
+  name: prometheus-json-exporter-configmap
