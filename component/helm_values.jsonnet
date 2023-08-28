@@ -5,7 +5,7 @@ local params = inv.parameters.json_exporter;
 
 local labels =
   if std.member(inv.applications, 'prometheus') then
-    prometheus.RegisterNamespace({}).metadata.labels
+    { 'monitoring.syn.tools/enabled': 'true' }
   else {}
 ;
 
