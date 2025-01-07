@@ -1,7 +1,8 @@
 ---
 parameters:
   json_exporter:
-    =_metadata: {}
+    =_metadata:
+      multi_tenant: true
     namespace: syn-json-exporter
     name: prometheus-json-exporter
     charts:
